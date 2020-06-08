@@ -2,56 +2,88 @@
 import java.util.concurrent.ThreadLocalRandom;
 
 class Helper {
-
-	static int[] lista_generica_valores ( int largo_cadena ) {
-		int [] arreglo_base = new int[largo_cadena];
-		for ( int n =0; n<largo_cadena;n++ ) {
-			arreglo_base[n] = ThreadLocalRandom.current().nextInt(0, 100000 + 1);
+	//nombre de clases(sustantivos) es UpperCase
+	//nombre de metodos(verbo) es lowerCase
+	//nombre de atributos(caracteristica) es lowerCase
+	//no hay snake_case en Java
+	static int[] generarArrayAleatorio ( int cantidad ) {
+		int [] array = new int[cantidad];
+		for ( int n =0; n<cantidad;n++ ) {
+			array[n] = ThreadLocalRandom.current().nextInt(0, 100000 + 1);
 		} 
-		return arreglo_base;
+		return array;
 	}
 
 }
+
+/**
+ * 
+ * @author USUARIOS
+ *
+ * #Requisitos funcionales:
+ * - El valor del nodo no puede ser modificado
+ * - Cuando se inserte un nuevo nodo, se inserte al final
+ * 
+ * # Modificaciones
+ * - Cambio de nombre de atributos: The principle of least Surprise
+ * - Cambio de lógica de negocio (basica) : The boy Scout Rule
+ * - Verificando que los métodos cumplan con el principio: Single Responsability Principle
+ */
+
 class ListaEnlazada {
 	
 	// Nodo Inicial
-	private Nodo inicio;
+	private Nodo primero;
 	// Nodo Final
-	private Nodo fin;
+	private Nodo ultimo;
 
 	// Constructor de la clase
 	public ListaEnlazada () {
-		this.inicio = null;
-		this.fin = null;
+		this.primero = null;
+		this.ultimo = null;
 		System.out.println("Soy lista enlazada : 1.0");
 	}
 
 	// Crea la lista a partir de un arreglo de valores
-	public void crearSimple ( int[] valores ) {
+	public int crearSimple ( int[] valores ) {
 		// por cada elemento del arreglo crea un nodo
-		for (int n : valores) {
+		for (int valor : valores) {
 			// Nuevo objeto nodo
-			Nodo nuevoNodo = new Nodo( n );
+			Nodo nuevoNodo = new Nodo( valor );
 			
-			if ( this.inicio == null ) {
+			if ( this.primero == null ) {
 				// Si la lista esta vacia, crea una nueva
-				this.inicio = nuevoNodo;
-				this.fin = nuevoNodo;
-			} else {
-				// Si la lista existe el ultimo elemento es apuntado al nuevo nodo
-				this.fin.setSiguiente( nuevoNodo );
+				this.primero = nuevoNodo;
+				this.ultimo = nuevoNodo;
+			} 
+			//Si la lista NO está vacia, entonces el ultimo nodo apunta al nuevo nodo
+			else {
+				this.ultimo.setSiguiente( nuevoNodo );
 				// El nuevo nodo toma la posicion del ultimo elemento en las variables
-				this.fin = nuevoNodo;
+				this.ultimo = nuevoNodo;
 			}
 		}
+		
+		return getCantidad();
 	}
 
+	public int getCantidad() {
+		int cantidad = 0;
+		Nodo nodo = this.primero;
+		while( nodo != null ) {
+			cantidad++;
+			nodo = nodo.getSiguiente();
+		}
+		return cantidad;
+	}
+	
+	
 	// retorna la lista de forma ordenada
-	public void retornaLista () {
-		Nodo recorre = this.inicio;
-		while ( recorre != null ) {
-			System.out.println( recorre.getValor() );
-			recorre = recorre.getSiguiente();
+	public void mostrarLista () {
+		Nodo nodo = this.primero;
+		while ( nodo != null ) {
+			System.out.println( nodo.getValor() );
+			nodo = nodo.getSiguiente();
 		} 
 	}
 
@@ -60,12 +92,17 @@ class ListaEnlazada {
 // Objeto Nodo de la lista
 class Nodo {
 	private int valor;
+	// Verificar que un objeto este instanciado
+	// Puede generar un NullPointException
+	// Cuando crees un objeto debe igualarse a un valor inicial o null
 	private Nodo siguiente;
+	
 	public Nodo ( int valor ) {
 		this.valor = valor;
+		this.siguiente = null;
 	}
-	public void setSiguiente (Nodo sig) {
-		this.siguiente = sig;
+	public void setSiguiente (Nodo siguiente) {
+		this.siguiente = siguiente;
 	}
 	public int getValor () {
 		return this.valor;
@@ -79,12 +116,12 @@ class Main {
 	  public static void main(String[] args) {
 	    
 		// Arreglo generico
-		int[] arreglo_base = Helper.lista_generica_valores(20);
+		int[] arregloBase = Helper.generarArrayAleatorio(20);
 
 		// Ejecución de la lista enlazada simple
 		ListaEnlazada lista = new ListaEnlazada();
-		lista.crearSimple( arreglo_base );
-		lista.retornaLista();
+		lista.crearSimple( arregloBase );
+		lista.mostrarLista();
 
 	  }
 	}
